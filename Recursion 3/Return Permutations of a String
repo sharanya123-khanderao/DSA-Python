@@ -1,0 +1,63 @@
+Given a string, find and return all the possible permutations of the input string.
+Note : The order of permutations are not important.
+Sample Input :
+abc
+Sample Output :
+abc
+acb
+bac
+bca
+cab
+cba
+
+prgram:
+'''def permutation(str):
+    if len(str) == 0:
+        return 
+    
+    output = []
+    for i in range(len(str)):
+        
+        start = str[i]
+        
+        remaining = str[:i] + str[i+1:]        
+        permutation(remaining)
+        output.append(start + remaining)
+        
+        next1 = remaining[::-1]
+        permutation(next1)
+        output.append(start + next1 )
+        
+    return output
+
+
+string = input()
+ans = permutation(string)
+for s in ans:
+    print(s)'''
+
+def permute(s, answer):
+    if (len(s) == 0):
+        print(answer, end = "  ")
+        print()
+        return
+
+     
+
+    for i in range(len(s)):
+        ch = s[i]
+        left_substr = s[0:i]
+        right_substr = s[i + 1:]
+        rest = left_substr + right_substr
+        permute(rest, answer + ch)
+
+answer = ""
+s = input()
+permute(s, answer)
+    
+pass
+
+
+
+    
+    
