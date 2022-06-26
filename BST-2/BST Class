@@ -1,0 +1,167 @@
+Implement the BST class which includes following functions -
+1. search
+Given an element, find if that is present in BST or not. Return true or false.
+2. insert -
+Given an element, insert that element in the BST at the correct position. If element is equal to the data of the node, insert it in the left subtree.
+3. delete -
+Given an element, remove that element from the BST. If the element which is to be deleted has both children, replace that with the minimum element from right sub-tree.
+4. printTree (recursive) -
+Print the BST in ithe following format -
+For printing a node with data N, you need to follow the exact format -
+N:L:x,R:y
+where, N is data of any node present in the binary tree. x and y are the values of left and right child of node N. Print the children only if it is not null.
+There is no space in between.
+You need to print all nodes in the recursive format in different lines.
+
+program:
+import queue
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+class BST:
+    
+    def __init__(self):
+        self.root=None
+        self.numNodes=0
+    
+    
+    def insertHelper(self,root,data):
+    
+        if root==None:
+            root=BinaryTreeNode(data)
+            return root
+
+        if root.data>=data:
+            newLeft=self.insertHelper(root.left,data)
+            root.left=newLeft
+            return root
+
+        else:
+            newRight=self.insertHelper(root.right,data)
+            root.right=newRight
+            return root
+    
+    def insert(self,data):
+        self.numNodes+=1
+        self.root=self.insertHelper(self.root,data)
+        
+    def searchHelper(self,root,data):
+
+        if root==None:
+            return False
+
+        if root.data==data:
+            return True
+
+        if root.data>data:
+            leftSearch=self.searchHelper(root.left,data)
+
+        else:
+            rightSearch=self.searchHelper(root.right,data)
+
+
+    def search(self,data):
+        return self.searchHelper(self.root,data)
+
+        
+    def Min(self,root):
+        
+        if root==None:
+            return 100000
+
+        if root.left==None:
+            return root.data
+
+        return self.Min(root.left)
+    
+    def deleteHelper(self,root,data):
+
+
+        if root==None:
+            return False,None
+
+        if root.data>data:
+            isLeftDeleted,newLeft=self.deleteHelper(root.left,data)
+            root.left=newLeft
+            return True,root
+
+        if root.data<data:
+            isRightDeleted,newRight=self.deleteHelper(root.right,data)
+            root.right=newRight
+            return True,root
+        else:#root.data==data:
+
+            #if root has no child
+            if root.left is None and root.right is None:
+                return True,None
+
+            #if root has one child
+            if root.left==None:
+                return True,root.right
+
+            if root.right==None:
+                return True,root.left
+
+
+            #if root has two child 
+            else:
+                replacement=self.Min(root.right)
+                root.data=replacement
+                isDeleted,newRoot=self.deleteHelper(root.right,replacement)
+                root.right=newRoot
+                return True,root
+
+    def delete(self,data):
+
+        deleted,finalRoot=self.deleteHelper(self.root,data)
+        self.root=finalRoot
+        if deleted:
+            self.numNodes-=1
+        return finalRoot    
+    
+
+    def printTreeHelper(self,root):
+        
+        if root==None:
+            return None
+        
+        print(root.data,end=":")
+        
+        if root.left!=None:
+            print("L:"+str(root.left.data),end=",")
+        if root.right!=None:
+            print("R:"+str(root.right.data),end="")
+        
+        print() #print new line after each node is done with its child
+        self.printTreeHelper(root.left)
+        self.printTreeHelper(root.right)
+        
+    def printTree(self):
+        self.printTreeHelper(self.root)
+        
+    def count(self):
+        return self.numNodes
+
+b = BST()
+q = int(input())
+while (q > 0) :
+    li = [int(ele) for ele in input().strip().split()]
+    choice = li[0]
+    q-=1
+    if choice == 1:
+        data = li[1]
+        b.insert(data)
+    elif choice == 2:
+        data = li[1]
+        b.delete(data)
+    elif choice == 3:
+        data = li[1]
+        ans = b.search(data)
+        if ans is True:
+            print('true')
+        else:
+            print('false')
+    else:
+        b.printTree()
